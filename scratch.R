@@ -21,15 +21,13 @@ get_swap_data <- function(file) {
     select(
       -notional.currency.2, 
       -org.dissemination.id, 
-      -action, 
       -cleared, 
       -collateralization,
       -end.user.exception,
       -bespoke.swap,
       -exec.venue,
       -asset.class,
-      -asset.subclass,
-      -contract.type
+      -asset.subclass
     ) %>% 
     mutate(
       exec.timestamp = as.POSIXct(strptime(x = as.character(exec.timestamp), format="%Y-%m-%dT%H:%M:%S.000", tz="GMT")),
@@ -40,9 +38,9 @@ get_swap_data <- function(file) {
       tenor = elapsed_months(end.date, effective.date)
     ) 
   if(file == 'cr') {
-    rr
+    rr %>% filter(!is.na(notional.currency.amount.1))
   } else {
-   rr %>%
+   rr  %>%
      filter(!is.na(notional.currency.amount.1)) %>%
      filter(settlement.currency != 'JPY') 
   }  
